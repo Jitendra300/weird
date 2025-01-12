@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Carrier Details</title>
+    <style>
+        :root {
+            --primary-color: #e60000; /* Vodafone Red */
+            --secondary-color: #f7f7f7;
+            --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--secondary-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--box-shadow);
+            width: 100%;
+            max-width: 600px;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        select, input[type="text"], input[type="number"], input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            font-size: 16px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+            box-sizing: border-box;
+        }
+
+        select:focus, input[type="text"]:focus, input[type="number"]:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 5px rgba(230, 0, 0, 0.5);
+        }
+
+        input[type="submit"] {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #cc0000;
+        }
+
+        .family-member {
+            margin-top: 20px;
+            background: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .container::before {
+            content: '';
+            display: block;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary-color), #cc0000);
+            border-radius: 12px 12px 0 0;
+            margin-bottom: 20px;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.9em;
+            margin-top: -8px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            select, input[type="text"], input[type="number"], input[type="submit"] {
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Family Carrier Details</h2>
+        <form method="post" onsubmit="return validateForm()">
+            <label for="family_count">How many family members?</label>
+            <select id="family_count" name="family_count" required onchange="generateFamilyFields()">
+                <option value="">--Select Number of Family Members--</option>
+                {% for i in range(1, 6) %}
+                    <option value="{{ i }}">{{ i }}</option>
+                {% endfor %}
+            </select>
+
+            <div id="family-phones-container"></div>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+
+    <script>
+        function generateFamilyFields() {
+            const familyCount = parseInt(document.getElementById('family_count').value, 10);
+            const container = document.getElementById('family-phones-container');
+            container.innerHTML = '';
+
+            for (let i = 0; i < familyCount; i++) {
+                const familyMemberDiv = document.createElement('div');
+                familyMemberDiv.className = 'family-member';
+                familyMemberDiv.innerHTML = `
+                    <label>Family Member ${i + 1}</label>
+                    <input type="text" name="family_name[]" placeholder="Enter family member name" required>
+                    <input type="number" name="family_phone[]" placeholder="Enter 10-digit phone number" required maxlength="10" oninput="validatePhoneNumber(this)">
+                    <div class="error" id="phone_error_${i}"></div>
+                    <label for="carrier_${i}">Carrier</label>
+                    <select name="family_carrier[]" id="carrier_${i}" required>
+                        <option value="">--Select Carrier--</option>
+                        {% for carrier in plans_data['Carrier'].unique() %}
+                            <option value="{{ carrier }}">{{ carrier }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="plan_${i}">Plan</label>
+                    <select name="family_plan[]" id="plan_${i}" data-validity-input="validity_${i}" required>
+                        <option value="">--Select Plan--</option>
+                    </select>
+                    <input type="hidden" name="family_validity[]" id="validity_${i}" value="">
+                `;
+                container.appendChild(familyMemberDiv);
+
+                const carrierSelect = familyMemberDiv.querySelector(`#carrier_${i}`);
+                const planSelect = familyMemberDiv.querySelector(`#plan_${i}`);
+                const validityInput = document.getElementById(`validity_${i}`);
+
+                carrierSelect.addEventListener('change', function () {
+                    const selectedCarrier = this.value;
+                    fetch(`/get_plans?carrier=${encodeURIComponent(selectedCarrier)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            planSelect.innerHTML = '<option value="">--Select Plan--</option>';
+                            data.plan_validity_map.forEach(entry => {
+                                const option = document.createElement('option');
+                                option.value = entry.Plan;
+                                option.textContent = entry.Plan;
+                                option.dataset.validity = entry.Validity;
+                                planSelect.appendChild(option);
+                            });
+                        });
+                });
+
+                planSelect.addEventListener('change', function () {
+                    const selectedOption = this.options[this.selectedIndex];
+                    validityInput.value = selectedOption.dataset.validity || '';
+                });
+            }
+        }
+
+        function validatePhoneNumber(input) {
+            const phoneNumber = input.value;
+            const errorDiv = input.nextElementSibling;
+
+            if (phoneNumber.length > 10) {
+                errorDiv.textContent = "Phone number must be exactly 10 digits.";
+                input.value = phoneNumber.slice(0, 10); // Trim to 10 digits
+            } else if (phoneNumber.length < 10 && phoneNumber.length > 0) {
+                errorDiv.textContent = "Phone number is incomplete.";
+            } else {
+                errorDiv.textContent = "";
+            }
+        }
+
+        function validateForm() {
+            const phoneInputs = document.querySelectorAll('input[name="family_phone[]"]');
+            let isValid = true;
+            let firstInvalidInput = null;
+
+            phoneInputs.forEach((input, index) => {
+                const phoneNumber = input.value;
+                const errorDiv = document.getElementById(`phone_error_${index}`);
+                const regex = /^[0-9]{10}$/;
+
+                if (!regex.test(phoneNumber)) {
+                    errorDiv.textContent = phoneNumber.length < 10 
+                        ? "Phone number is incomplete." 
+                        : "Phone number must be exactly 10 digits.";
+                    isValid = false;
+
+                    if (!firstInvalidInput) {
+                        firstInvalidInput = input; // Save the first invalid input
+                    }
+                } else {
+                    errorDiv.textContent = "";
+                }
+            });
+
+            if (firstInvalidInput) {
+                firstInvalidInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstInvalidInput.focus(); // Optional: Focus on the first invalid input
+            }
+
+            return isValid;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan Summary</title>
+    <style>
+        :root {
+            --primary-color: #E60000;
+            --secondary-color: #FFFFFF;
+            --accent-color: rgba(255, 255, 255, 0.1);
+            --font-family: 'Arial, sans-serif';
+        }
+    
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+    
+        body {
+            font-family: var(--font-family);
+            height: 100vh;
+            background: radial-gradient(circle, #E60000 20%, #000000 80%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            color: var(--secondary-color);
+            overflow-y: auto;
+        }
+    
+        .container {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid var(--primary-color);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            margin: 40px 10px;
+            width: 95%;
+            max-width: 1200px;
+            animation: appear 1.5s ease-out forwards;
+        }
+    
+        h2, h3, h4 {
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px var(--primary-color);
+            animation: textGlow 1.5s infinite alternate;
+        }
+    
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+    
+        table th, table td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 14px;
+            word-wrap: break-word;
+        }
+    
+        table th {
+            background-color: rgba(230, 0, 0, 0.8);
+            color: var(--secondary-color);
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+    
+        table tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+    
+        .total {
+            font-size: 1.2rem;
+            margin-top: 20px;
+            font-weight: bold;
+            text-shadow: 0 0 10px var(--primary-color);
+            text-align: center;
+        }
+    
+        .redirect-button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            background-color: var(--secondary-color);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin: 20px auto;
+            text-align: center;
+            text-decoration: none;
+        }
+    
+        .redirect-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 20px rgb(0, 0, 0);
+        }
+    
+        @media (max-width: 768px) {
+            h2, h3, h4 {
+                font-size: 1.5rem;
+            }
+    
+            table th, table td {
+                font-size: 12px;
+                padding: 8px;
+            }
+    
+            .total {
+                font-size: 1rem;
+            }
+    
+            .container {
+                padding: 15px;
+            }
+        }
+    
+        @media (max-width: 480px) {
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+    
+            table th, table td {
+                font-size: 10px;
+                padding: 5px;
+            }
+    
+            .redirect-button {
+                font-size: 0.9rem;
+                padding: 8px 15px;
+            }
+    
+            .container {
+                margin: 20px 5px;
+                padding: 10px;
+            }
+    
+            h2, h3, h4 {
+                font-size: 1.2rem;
+            }
+        }
+        .container {
+        position: relative;
+        z-index: 1;
+        background: rgba(0, 0, 0, 0.6);
+        border: 2px solid var(--primary-color);
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        padding: 20px;
+        margin: 40px 10px;
+        width: 95%;
+        max-width: 1200px;
+        animation: appear 1.5s ease-out forwards;
+    }
+
+    @keyframes appear {
+        0% {
+            opacity: 0;
+            transform: translateZ(0) scale(0.8);
+        }
+        100% {
+            opacity: 1;
+            transform: translateZ(50px) scale(1);
+        }
+    }
+    .star {
+        position: absolute;
+        background: var(--secondary-color);
+        border-radius: 50%;
+        animation: glow 1.5s infinite alternate;
+    }
+
+    .star.small {
+        width: 2px;
+        height: 2px;
+    }
+
+    .star.large {
+        width: 6px;
+        height: 6px;
+    }
+
+    @keyframes glow {
+        0% {
+            box-shadow: 0 0 5px var(--secondary-color);
+        }
+        100% {
+            box-shadow: 0 0 15px var(--secondary-color), 0 0 25px var(--primary-color);
+        }
+    }
+
+    .list-item {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.list-item h4 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+    text-shadow: 0 0 10px var(--primary-color);
+}
+
+.list-item p {
+    font-size: 1rem;
+    margin: 5px 0;
+    color: var(--secondary-color);
+}
+
+
+    </style>
+    
+</head>
+<body>
+    <div class="background"></div>
+
+    <script>
+        const body = document.querySelector('body');
+        const totalStars = 90;
+
+        for (let i = 0; i < totalStars; i++) {
+            const star = document.createElement('div');
+            star.classList.add('star');
+
+            // Randomly assign small or large class to 50% each
+            if (Math.random() < 0.5) {
+                star.classList.add('small');
+            } else {
+                star.classList.add('large');
+            }
+
+            star.style.top = Math.random() * 100 + 'vh';
+            star.style.left = Math.random() * 100 + 'vw';
+            star.style.animationDuration = (Math.random() * 2 + 1) + 's';
+
+            body.appendChild(star);
+        }
+    </script>
+    <div class="container">
+        <h2>Plan Summary</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Phone</th>
+                    <th>Carrier</th>
+                    <th>Plan</th>
+                    <th>Validity (days)</th>
+                    <th>Amount (Totally Charged For 1 month Time Period)</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                {% for member in family_data %}
+                <tr>
+                    <td>{{ member.phone }}</td>
+                    <td>{{ member.carrier }}</td>
+                    <td>{{ member.plan }}</td>
+                    <td>{{ member.validity }}</td>
+                    <td>
+                        {% if member.amount and member.validity and member.validity > 0 %}
+                            {{ member.amount | round(2) }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                   
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="total">
+            Total Spent Throughout the Month For all Family Members: ₹{{ total_spent | round(2) }}
+        </div>
+    </div>
+
+    <div class="container">
+        <h3>Matching Plans for Your Family Members In Our Database</h3>
+        {% if family_matches[0].matches | length == 0 %}
+            <div class="list-item">
+                <p>No match found for Phone: {{ family_matches[0].phone }}</p>
+            </div>
+        {% else %}
+            {% for match in family_matches[0].matches %}
+            <div class="list-item">
+                <h4>Phone: {{ family_matches[0].phone }}</h4>
+                <p><strong>Plan:</strong> {{ match.Plan }}</p>
+                <p><strong>Amount (₹):</strong> {{ match.Amount }}</p>
+                <p><strong>Data:</strong> {{ match.Data }}</p>
+                <p><strong>Benefits:</strong> {{ match.Benefits }}</p>
+                <p><strong>Add-ons/Subscriptions:</strong> {{ match['Add-ons/Subscriptions'] }}</p>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    
+        </table>
+    </div>
+    
+    
+</body>
+</html>

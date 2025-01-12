@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Success</title>
+<style>
+    :root {
+        --primary-color: #4CAF50;
+        --font-family: 'Arial, sans-serif';
+    }
+
+    body {
+        font-family: var(--font-family);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+    }
+
+    .container {
+        text-align: center;
+    }
+
+    input[type="text"], input[type="email"] {
+        width: 300px;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    input[type="button"] {
+        padding: 10px 20px;
+        background-color: var(--primary-color);
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    input[type="button"]:hover {
+        background-color: #388E3C;
+    }
+</style>
+<script>
+async function sendEmail() {
+    const email = document.getElementById('email').value;
+    if (!email) {
+        alert("Please enter a valid email address.");
+        return;
+    }
+
+    const response = await fetch(`/send_email?email=${encodeURIComponent(email)}`);
+    const data = await response.json();
+
+    if (data.success) {
+        alert("Data sent via email successfully!");
+    } else {
+        alert("Failed to send data via email.");
+    }
+}
+</script>
+</head>
+<body>
+    <div class="container">
+        <h2>Data Saved Successfully!</h2>
+        <p>Thank you for submitting your details.</p>
+        <input type="email" id="email" placeholder="Enter email address" required>
+        <input type="button" value="Send Data" onclick="sendEmail()">
+    </div>
+</body>
+</html>

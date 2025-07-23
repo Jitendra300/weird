@@ -68,7 +68,7 @@ function copyAttendance() {
     const status = cb.dataset.status;
 
     // Skip Alice (already forced to present)
-    if (name === "Jitendra") return; //handle separately
+    if (name === "JITENDRA") return; //handle separately
 
     if (cb.checked) {
       if (status === "Present") presentList.push(name);
@@ -76,7 +76,7 @@ function copyAttendance() {
     }
   });
 
-    insertInMiddle(presentList, "Jitendra");
+    insertInMiddle(presentList, "JITENDRA");
 
   let result = "";
 
